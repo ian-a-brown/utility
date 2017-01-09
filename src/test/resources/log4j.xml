@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : logging.xml
+    Created on : November 22, 2006, 11:28 PM
+    Author     : IanBrown
+    Description:
+        Purpose of the document follows.
+-->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d %-5p [%t] %C{2} (%F:%L) - %m%n"/>
+        </layout>
+    </appender>
+    <category name="*.hbm2ddl.SchemaExport">
+        <priority value="debug"/>
+        <appender-ref ref="STDOUT"/>
+    </category>
+    <root>
+        <priority value="info"/>
+        <appender-ref ref="STDOUT"/>
+    </root>
+</log4j:configuration>
