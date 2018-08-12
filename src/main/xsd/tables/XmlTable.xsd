@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.browntrask.usa/Tables"
+	xmlns="http://www.browntrask.usa/Tables"
+	elementFormDefault="qualified">
+
+	<xs:annotation>
+		<xs:documentation xml:lang="en">
+			Schema for files describing a table.
+			<br />
+			Copyright 2008, 2018 Ian Andrew Brown
+			<br />
+			All Rights Reserved
+			<br />
+		</xs:documentation>
+	</xs:annotation>
+
+	<xs:complexType name="XmlTable">
+		<xs:sequence>
+			<xs:element name="keyColumnName" type="xs:string"
+				maxOccurs="1" minOccurs="0">
+			</xs:element>
+			<xs:element name="columnName" type="xs:string"
+				maxOccurs="unbounded" minOccurs="1">
+			</xs:element>
+			<xs:element name="row" type="XmlTableRow"
+				maxOccurs="unbounded" minOccurs="1">
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="name" type="xs:string" use="required"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="XmlTableRow">
+		<xs:sequence>
+			<xs:element name="column" type="XmlTableColumn"
+				maxOccurs="unbounded" minOccurs="1">
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="rowName" type="xs:string" use="optional"></xs:attribute>
+	</xs:complexType>
+
+	<xs:complexType name="XmlTableColumn">
+		<xs:attribute name="columnName" type="xs:string"
+			use="required">
+		</xs:attribute>
+		<xs:attribute name="value" type="xs:string" use="required"></xs:attribute>
+	</xs:complexType>
+
+	<xs:element name="table" type="XmlTable"></xs:element>
+</xs:schema>

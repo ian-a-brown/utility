@@ -5,17 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.jexl2.Expression;
-import org.apache.commons.jexl2.JexlEngine;
-import org.apache.commons.jexl2.parser.ASTIdentifier;
-import org.apache.commons.jexl2.parser.ASTJexlScript;
-import org.apache.commons.jexl2.parser.ASTMethodNode;
-import org.apache.commons.jexl2.parser.ASTReference;
-import org.apache.commons.jexl2.parser.Node;
-import org.apache.commons.jexl2.parser.ParseException;
-import org.apache.commons.jexl2.parser.Parser;
-import org.apache.commons.jexl2.parser.ParserTokenManager;
-import org.apache.commons.jexl2.parser.SimpleCharStream;
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.JexlEngine;
+import org.apache.commons.jexl3.internal.Scope;
+import org.apache.commons.jexl3.parser.ASTIdentifier;
+import org.apache.commons.jexl3.parser.ASTJexlScript;
+import org.apache.commons.jexl3.parser.ASTMethodNode;
+import org.apache.commons.jexl3.parser.ASTReference;
+import org.apache.commons.jexl3.parser.Node;
+import org.apache.commons.jexl3.parser.ParseException;
+import org.apache.commons.jexl3.parser.Parser;
+import org.apache.commons.jexl3.parser.ParserTokenManager;
+import org.apache.commons.jexl3.parser.SimpleCharStream;
 
 /**
  * Abstract wrapper around a Jexl Expression handler to allow for the expression values to be set from a map of entries rather than
@@ -28,7 +30,7 @@ import org.apache.commons.jexl2.parser.SimpleCharStream;
  *
  * @author Ian Andrew Brown
  * @since V0.1.6 Jul 28, 2007
- * @version V2.2.0 Oct 19, 2008
+ * @version V2.4.0 Aug 11, 2018
  */
 public abstract class AbstractExpressionHandler {
 
@@ -38,14 +40,9 @@ public abstract class AbstractExpressionHandler {
 	 * 
 	 * @author Ian Andrew Brown
 	 * @since V2.2.0 Oct 19, 2014
-	 * @version V2.2.0 Oct 19, 2014
+	 * @version V2.4.0 Aug 11, 2018
 	 */
-	protected static final JexlEngine jexlEngine = new JexlEngine();
-
-	static {
-		jexlEngine.setLenient(false);
-		jexlEngine.setSilent(false);
-	}
+	protected static final JexlEngine jexlEngine = new JexlBuilder().silent(false).strict(true).create();
 
 	/**
 	 * the Jexl Expression to evaluate.
@@ -53,9 +50,9 @@ public abstract class AbstractExpressionHandler {
 	 *
 	 * @author Ian Andrew Brown
 	 * @since V0.1 July 18, 2005
-	 * @version July 28, 2007
+	 * @version V2.4.0 Aug 11, 2018
 	 */
-	private transient Expression expression;
+	private transient JexlExpression expression;
 
 	/**
 	 * the string used to create the expression.
@@ -144,9 +141,9 @@ public abstract class AbstractExpressionHandler {
 	 * @author Ian Andrew Brown
 	 * @return the expression.
 	 * @since V0.1 March 18, 2005
-	 * @version June 13, 2007
+	 * @version V2.4.0 Aug 11, 2018
 	 */
-	public final Expression getExpression() {
+	public final JexlExpression getExpression() {
 		return expression;
 	}
 
@@ -192,9 +189,9 @@ public abstract class AbstractExpressionHandler {
 	 * @exception ExpressionException
 	 *                if there is a problem with the expression.
 	 * @since V0.1 April 25, 2005
-	 * @version Dec 4, 2007
+	 * @version V2.4.0 Aug 11, 2018
 	 */
-	public final void setExpression(final Expression expression) {
+	public final void setExpression(final JexlExpression expression) {
 		this.expression = expression;
 		parseVariables();
 	}
@@ -238,7 +235,7 @@ public abstract class AbstractExpressionHandler {
 	@Override
 	public String toString() {
 		final StringBuffer stringBuffer = new StringBuffer(getClass().getSimpleName());
-		stringBuffer.append(": ").append(null == getExpression() ? "null" : getExpression().getExpression()).append(" from ")
+		stringBuffer.append(": ").append(null == getExpression() ? "null" : getExpression().getSourceText()).append(" from ")
 				.append(getString()).append(' ').append(getVars());
 
 		return stringBuffer.toString();
@@ -321,7 +318,7 @@ public abstract class AbstractExpressionHandler {
 		if (node instanceof ASTReference) {
 			astReferenceNodeToVariables(variable);
 		} else if (!(node instanceof ASTMethodNode) && node instanceof ASTIdentifier) {
-			final StringBuffer variableBuffer = new StringBuffer(((ASTIdentifier) node).image);
+			final StringBuffer variableBuffer = new StringBuffer(((ASTIdentifier) node).getName());
 			if (null != variable) {
 				variableBuffer.append(variable);
 			}
@@ -345,17 +342,17 @@ public abstract class AbstractExpressionHandler {
 	 * @exception ExpressionException
 	 *                if there is a problem with the expression.
 	 * @since V0.1 April 25, 2005
-	 * @version V2.2.0 Oct 18, 2014
+	 * @version V2.4.0 Aug 11, 2018
 	 */
 	private final void parseVariables() {
 		try {
 			final Parser parser = new Parser(new ParserTokenManager(new SimpleCharStream(new StringReader(getExpression()
-					.getExpression()))));
-			final ASTJexlScript script = parser.JexlScript();
+					.getSourceText()))));
+			final ASTJexlScript script = parser.JexlScript(new Scope(null));
 			setVariables(new ArrayList<String>());
 			nodeToVariables(script);
 		} catch (final ParseException e) {
-			throw new ExpressionException("Failed to parse the variables from " + getExpression().getExpression() + ".", e);
+			throw new ExpressionException("Failed to parse the variables from " + getExpression().getSourceText() + ".", e);
 		}
 	}
 

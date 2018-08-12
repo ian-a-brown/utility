@@ -10,8 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.commons.jexl2.JexlContext;
-import org.apache.commons.jexl2.MapContext;
+import org.apache.commons.jexl3.JexlContext;
+import org.apache.commons.jexl3.MapContext;
 
 /**
  * Extended AbstractExpressionHandler that matches an object against an expression.
@@ -19,7 +19,7 @@ import org.apache.commons.jexl2.MapContext;
  *
  * @author Ian Andrew Brown
  * @since V0.1.0 March 11, 2005
- * @version V2.2.0 Feb 28, 2015
+ * @version V2.4.0 Aug 11, 2018
  */
 public final class Comparator extends AbstractExpressionHandler implements Serializable, Comparable<Comparator> {
 
@@ -292,7 +292,7 @@ public final class Comparator extends AbstractExpressionHandler implements Seria
 	 * @exception MatchException
 	 *                if there is a problem.
 	 * @since V0.1 December 12, 2005
-	 * @version V2.2.0 Oct 18, 2014
+	 * @version V2.4.0 Aug 11, 2018
 	 */
 	public final boolean matches(final String name, final Object object) {		
 		if (null == getString()) {
@@ -312,9 +312,9 @@ public final class Comparator extends AbstractExpressionHandler implements Seria
 
 		try {
 			return (Boolean) getExpression().evaluate(context);
-		} catch (final org.apache.commons.jexl2.JexlException.Property e) {
+		} catch (final org.apache.commons.jexl3.JexlException.Property e) {
 			throw new MatchException("Failed to check " + name + ".", e);
-		} catch (final org.apache.commons.jexl2.JexlException.Variable e) {
+		} catch (final org.apache.commons.jexl3.JexlException.Variable e) {
 			return false;
 		} catch (final java.lang.RuntimeException e) {
 			throw e;

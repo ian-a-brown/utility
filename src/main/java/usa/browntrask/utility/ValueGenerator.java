@@ -3,8 +3,8 @@ package usa.browntrask.utility;
 import java.io.Serializable;
 import java.util.Map;
 
-import org.apache.commons.jexl2.JexlContext;
-import org.apache.commons.jexl2.MapContext;
+import org.apache.commons.jexl3.JexlContext;
+import org.apache.commons.jexl3.MapContext;
 
 /**
  * Extended AbstractExpressionHandler that generates a value using the supplied equation.
@@ -16,7 +16,7 @@ import org.apache.commons.jexl2.MapContext;
  *            the type of value to generate.
  * @author Ian Andrew Brown
  * @since V0.1.6 Jul 28, 2007
- * @version V2.2.0 Oct 18, 2014
+ * @version V2.4.0 Aug 11, 2018
  */
 public final class ValueGenerator<O extends Serializable, V extends Serializable> extends AbstractExpressionHandler {
 

@@ -12,8 +12,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.jexl2.Expression;
-import org.apache.commons.jexl2.JexlEngine;
+import org.apache.commons.jexl3.JexlBuilder;
+import org.apache.commons.jexl3.JexlExpression;
+import org.apache.commons.jexl3.JexlEngine;
 import org.junit.Test;
 
 /**
@@ -22,7 +23,7 @@ import org.junit.Test;
  * 
  * @author Ian Andrew Brown
  * @since V0.1.7 Aug 19, 2007
- * @version V2.2.0 Nov 21, 2015
+ * @version V2.4.0 Aug 11, 2018
  */
 public final class TestAbstractExpressionHandler {
 
@@ -128,12 +129,12 @@ public final class TestAbstractExpressionHandler {
 	 * @throws ExpressionException
 	 *             if there is a problem with the expression.
 	 * @since V0.1.7 Aug 19, 2007
-	 * @version V1.6.0 Feb 2, 2011
+	 * @version V2.4.0 Aug 11, 2018
 	 */
 	@Test
 	public final void testAbstractExpressionHandler_string() throws ExpressionException {
 		assertEquals("Expression set", SIMPLE_EXPRESSION, new SpyExpressionHandler(SIMPLE_EXPRESSION).getExpression()
-				.getExpression());
+				.getSourceText());
 	}
 
 	/**
@@ -292,12 +293,12 @@ public final class TestAbstractExpressionHandler {
 	 * @throws ExpressionException
 	 *             if there is a problem with the expression.
 	 * @since V0.1.7 Aug 19, 2007
-	 * @version V1.6.0 Feb 2, 2011
+	 * @version V2.4.0 Aug 11, 2018
 	 */
 	@Test
 	public final void testGetExpression() throws ExpressionException {
 		assertEquals("Expression set", SIMPLE_EXPRESSION, new SpyExpressionHandler(SIMPLE_EXPRESSION).getExpression()
-				.getExpression());
+				.getSourceText());
 	}
 
 	/**
@@ -308,11 +309,11 @@ public final class TestAbstractExpressionHandler {
 	 * @throws ExpressionException
 	 *             if there is a problem with the expression.
 	 * @since V0.1.10 Aug 26, 2007
-	 * @version V1.6.0 Feb 2, 2011
+	 * @version V2.4.0 Aug 11, 2018
 	 */
 	@Test
 	public final void testGetExpression_quoted() throws ExpressionException {
-		assertEquals("Expression set", QUOTE_RESULT, new SpyExpressionHandler(QUOTE_EXPRESSION).getExpression().getExpression());
+		assertEquals("Expression set", QUOTE_RESULT, new SpyExpressionHandler(QUOTE_EXPRESSION).getExpression().getSourceText());
 	}
 
 	/**
@@ -411,22 +412,20 @@ public final class TestAbstractExpressionHandler {
 	}
 
 	/**
-	 * Test method for {@link usa.browntrask.utility.AbstractExpressionHandler#setExpression(Expression)}.
+	 * Test method for {@link usa.browntrask.utility.AbstractExpressionHandler#setExpression(JexlExpression)}.
 	 * <p>
 	 * 
 	 * @author Ian Andrew Brown
 	 * @throws Exception
 	 *             if there is a problem creating the expression.
 	 * @since V0.1.7 Aug 19, 2007
-	 * @version V2.2.0 Nov 21, 2015
+	 * @version V2.4.0 Aug 11, 2018
 	 */
 	@Test
 	public final void testSetExpression() throws Exception {
-		final JexlEngine engine = new JexlEngine();
-		engine.setLenient(true);
-		engine.setSilent(true);
+		final JexlEngine engine = new JexlBuilder().strict(true).silent(false).create();
 		final AbstractExpressionHandler handler = new SpyExpressionHandler();
-		final Expression expression = engine.createExpression(SIMPLE_EXPRESSION);
+		final JexlExpression expression = engine.createExpression(SIMPLE_EXPRESSION);
 
 		handler.setExpression(expression);
 
