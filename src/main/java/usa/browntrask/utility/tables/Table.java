@@ -64,6 +64,17 @@ public interface Table {
     int columnIndex(String columnName);
 
     /**
+     * Returns the names of the columns.
+     * <p>
+     *
+     * @author Ian Andrew Brown
+     * @return the column names.
+     * @since V2.5.0 Mar 19, 2019
+     * @version Mar 19, 2019
+     */
+    List<String> columnNames();
+
+    /**
      * Gets the name of the table.
      * <p>
      *

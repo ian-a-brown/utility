@@ -151,6 +151,22 @@ import java.util.Map;
     }
 
     /**
+     * @{InheritDoc}
+     */
+    @Override
+    public List<String> columnNames() {
+        synchronized (this) {
+            final List<String> names = new ArrayList<>(columnNames.size());
+
+            for (final Map.Entry<String, Integer> column : columnNames.entrySet()) {
+                names.set(column.getValue(), column.getKey());
+            }
+
+            return names;
+        }
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
