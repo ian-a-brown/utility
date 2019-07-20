@@ -6,6 +6,7 @@ import usa.browntrask.utility.tables.IllegalTableException;
 import usa.browntrask.utility.tables.Table;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,7 @@ import java.util.Map;
      */
     @GuardedBy("this")
     private final Map<String, Integer> columnNames = new LinkedHashMap<String, Integer>();
+
     /**
      * the names of the rows mapped to their indexes.
      * <p>
@@ -51,6 +53,7 @@ import java.util.Map;
      */
     @GuardedBy("this")
     private final Map<String, Integer> rowNameIndexes = new LinkedHashMap<String, Integer>();
+
     /**
      * the name of the key column for the table.
      * <p>
@@ -61,6 +64,7 @@ import java.util.Map;
      */
     @GuardedBy("this")
     private String keyColumnName;
+
     /**
      * the number of columns in the table.
      * <p>
@@ -146,7 +150,8 @@ import java.util.Map;
     @Override
     public final int columnIndex(final String columnName) {
         synchronized (this) {
-            return columnNames.get(columnName);
+            final Integer index = columnNames.get(columnName);
+            return index == null ? -1 : index;
         }
     }
 
@@ -156,7 +161,7 @@ import java.util.Map;
     @Override
     public List<String> columnNames() {
         synchronized (this) {
-            final List<String> names = new ArrayList<>(columnNames.size());
+            final List<String> names = new ArrayList<>(Arrays.asList(new String[columnNames.size()]));
 
             for (final Map.Entry<String, Integer> column : columnNames.entrySet()) {
                 names.set(column.getValue(), column.getKey());
@@ -205,7 +210,7 @@ import java.util.Map;
     public final String getValue(final int rowIndex, final String columnName) {
         synchronized (this) {
             final int columnIndex = columnIndex(columnName);
-            return getValue(rowIndex, columnIndex);
+            return columnIndex == -1 ? null : getValue(rowIndex, columnIndex);
         }
     }
 
@@ -216,7 +221,7 @@ import java.util.Map;
     public final String getValue(final String rowName, final String columnName) {
         synchronized (this) {
             final int rowIndex = rowIndex(rowName);
-            return getValue(rowIndex, columnName);
+            return rowIndex == -1 ? null : getValue(rowIndex, columnName);
         }
     }
 
@@ -254,7 +259,8 @@ import java.util.Map;
     @Override
     public final int rowIndex(final String rowName) {
         synchronized (this) {
-            return rowNameIndexes.get(rowName);
+            final Integer index = rowNameIndexes.get(rowName);
+            return index == null ? -1 : index;
         }
     }
 
